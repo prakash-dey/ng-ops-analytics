@@ -26,6 +26,7 @@
   --good: #1a7f37; --warn: #b26b00; --bad: #c62828;
   --hero-1: #104281; --hero-2: #2a78d6;
   --accent-soft: #e4effc; --track: #e9e8e4;
+  --sk-base: #e9e8e4; --sk-hi: #f7f6f3;
   --shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.06);
 }
 @media (prefers-color-scheme: dark) {
@@ -40,7 +41,7 @@
     --rest: #4a4a46;
     --good: #4cc26a; --warn: #e0a030; --bad: #ef6b6b;
     --hero-1: #0d366b; --hero-2: #1c5cab;
-    --accent-soft: #1b2b42; --track: #2e2e2b;
+    --accent-soft: #1b2b42; --track: #2e2e2b; --sk-base: #2a2a27; --sk-hi: #3d3d39;
     --shadow: 0 1px 2px rgba(0,0,0,.3);
   }
 }
@@ -55,7 +56,7 @@
   --rest: #4a4a46;
   --good: #4cc26a; --warn: #e0a030; --bad: #ef6b6b;
   --hero-1: #0d366b; --hero-2: #1c5cab;
-  --accent-soft: #1b2b42; --track: #2e2e2b;
+  --accent-soft: #1b2b42; --track: #2e2e2b; --sk-base: #2a2a27; --sk-hi: #3d3d39;
   --shadow: 0 1px 2px rgba(0,0,0,.3);
 }
 * { box-sizing: border-box; }
@@ -159,11 +160,22 @@ tbody tr.sel { background: var(--row-hover); box-shadow: inset 3px 0 0 var(--acc
 .detail-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 14px; }
 .detail-head h2 { font-size: 22px; }
 .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
-#status { padding: 80px 20px; text-align: center; color: var(--text-secondary); font-size: 15px; }
-#status::before { content: ""; display: block; width: 32px; height: 32px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--track); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
-#status.err::before { display: none; }
-#status.err { color: var(--bad); }
-@keyframes spin { to { transform: rotate(360deg); } }
+#status { display: none; padding: 60px 20px; text-align: center; color: var(--bad); font-size: 15px; }
+
+/* Shimmer skeleton shown while the APIs load */
+.sk {
+  display: block; border-radius: 8px;
+  background: linear-gradient(90deg, var(--sk-base) 0%, var(--sk-hi) 40%, var(--sk-base) 80%) 0 0 / 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+#skeleton[hidden] { display: none; }
+.sk-tabs { display: flex; gap: 8px; padding: 9px; }
+.sk-row { display: flex; gap: 16px; align-items: center; padding: 13px 12px; border-bottom: 1px solid var(--grid); }
+.sk-row:last-child { border-bottom: 0; }
+.sk-bars { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+.sk-bar { display: flex; gap: 12px; align-items: center; }
 .muted { color: var(--text-muted); }
 
 /* Presentation mode */
@@ -197,7 +209,45 @@ body.present .lede { font-size: 17px; }
     </div>
   </header>
 
-  <div id="status">Loading data from SAMA and RMS APIs…</div>
+  <div id="skeleton" aria-busy="true" aria-label="Loading dashboard data">
+    <div class="tabs sk-tabs"><span class="sk" style="width:96px;height:34px;border-radius:10px"></span><span class="sk" style="width:140px;height:34px;border-radius:10px"></span><span class="sk" style="width:110px;height:34px;border-radius:10px"></span><span class="sk" style="width:96px;height:34px;border-radius:10px"></span><span class="sk" style="width:130px;height:34px;border-radius:10px"></span><span class="sk" style="width:104px;height:34px;border-radius:10px"></span></div>
+    <span class="sk" style="width:min(720px,90%);height:14px;margin-bottom:10px"></span>
+    <span class="sk" style="width:min(420px,60%);height:14px;margin-bottom:20px"></span>
+    <div class="kpis">
+        <div class="card kpi"><span class="sk" style="width:42px;height:42px;border-radius:12px;flex:none"></span>
+          <div style="flex:1"><span class="sk" style="width:60%;height:12px"></span><span class="sk" style="width:45%;height:30px;margin:10px 0 10px"></span><span class="sk" style="width:85%;height:10px"></span></div></div>
+        <div class="card kpi"><span class="sk" style="width:42px;height:42px;border-radius:12px;flex:none"></span>
+          <div style="flex:1"><span class="sk" style="width:60%;height:12px"></span><span class="sk" style="width:45%;height:30px;margin:10px 0 10px"></span><span class="sk" style="width:85%;height:10px"></span></div></div>
+        <div class="card kpi"><span class="sk" style="width:42px;height:42px;border-radius:12px;flex:none"></span>
+          <div style="flex:1"><span class="sk" style="width:60%;height:12px"></span><span class="sk" style="width:45%;height:30px;margin:10px 0 10px"></span><span class="sk" style="width:85%;height:10px"></span></div></div>
+        <div class="card kpi"><span class="sk" style="width:42px;height:42px;border-radius:12px;flex:none"></span>
+          <div style="flex:1"><span class="sk" style="width:60%;height:12px"></span><span class="sk" style="width:45%;height:30px;margin:10px 0 10px"></span><span class="sk" style="width:85%;height:10px"></span></div></div>
+        <div class="card kpi"><span class="sk" style="width:42px;height:42px;border-radius:12px;flex:none"></span>
+          <div style="flex:1"><span class="sk" style="width:60%;height:12px"></span><span class="sk" style="width:45%;height:30px;margin:10px 0 10px"></span><span class="sk" style="width:85%;height:10px"></span></div></div>
+    </div>
+    <span class="sk" style="width:120px;height:11px;margin:6px 0 12px"></span>
+    <div class="insights">
+        <div class="card insight" style="border-left-color:var(--track)"><span class="sk" style="width:70%;height:18px"></span><span class="sk" style="width:95%;height:11px;margin-top:12px"></span><span class="sk" style="width:60%;height:11px;margin-top:8px"></span></div>
+        <div class="card insight" style="border-left-color:var(--track)"><span class="sk" style="width:70%;height:18px"></span><span class="sk" style="width:95%;height:11px;margin-top:12px"></span><span class="sk" style="width:60%;height:11px;margin-top:8px"></span></div>
+        <div class="card insight" style="border-left-color:var(--track)"><span class="sk" style="width:70%;height:18px"></span><span class="sk" style="width:95%;height:11px;margin-top:12px"></span><span class="sk" style="width:60%;height:11px;margin-top:8px"></span></div>
+        <div class="card insight" style="border-left-color:var(--track)"><span class="sk" style="width:70%;height:18px"></span><span class="sk" style="width:95%;height:11px;margin-top:12px"></span><span class="sk" style="width:60%;height:11px;margin-top:8px"></span></div>
+    </div>
+    <div class="card">
+      <div class="toolbar"><span class="sk" style="width:200px;height:18px"></span><span class="sk" style="width:220px;height:34px;border-radius:10px"></span></div>
+      <div class="table-wrap" style="overflow:hidden">
+          <div class="sk-row"><span class="sk" style="width:100%;height:10px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+          <div class="sk-row"><span class="sk" style="width:26%;height:13px"></span><span class="sk" style="width:12%;height:13px;margin-left:auto"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:12%;height:8px"></span><span class="sk" style="width:9%;height:13px"></span><span class="sk" style="width:7%;height:13px"></span></div>
+      </div>
+    </div>
+  </div>
+  <div id="status" role="alert"></div>
 
   <main id="app" style="display:none">
     <nav class="tabs" role="tablist" id="tabs">
@@ -445,19 +495,22 @@ function countBy(arr, fn) {
 }
 
 async function load() {
-  $('status').style.display = 'block'; $('status').className = ''; $('status').textContent = 'Loading data from SAMA and RMS APIs…';
+  $('status').style.display = 'none';
+  $('app').style.display = 'none';
+  $('skeleton').hidden = false;
   try {
     const [s, r] = await Promise.all([
       fetch(SAMA_URL).then(x => { if (!x.ok) throw new Error('SAMA API ' + x.status); return x.json(); }),
       fetch(RMS_URL).then(x => { if (!x.ok) throw new Error('RMS API ' + x.status); return x.json(); }),
     ]);
     prepare(s, r);
-    $('status').style.display = 'none'; $('app').style.display = 'block';
+    $('skeleton').hidden = true; $('app').style.display = 'block';
     $('subtitle').textContent = `${fmt(SAMA.length)} laptops in SAMA · ${fmt(RMS.length)} devices on RMS · updated ${new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}`;
     render();
   } catch (e) {
-    $('status').className = 'err';
-    $('status').textContent = 'Could not load data: ' + e.message;
+    $('skeleton').hidden = true;
+    $('status').style.display = 'block';
+    $('status').textContent = 'Could not load data: ' + e.message + '. Check your connection and press Refresh.';
   }
 }
 
@@ -1064,6 +1117,7 @@ document.addEventListener('keydown', e => {
 });
 document.getElementById('tabs').addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) setView(t.dataset.view); });
 { const h = location.hash.slice(1); if (VIEWS.includes(h)) view = prevView = h; }
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (VIEWS.includes(h) && h !== view && SAMA.length) setView(h); });
 load();
 </script>
 </body>
