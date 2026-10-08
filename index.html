@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NGO Laptop Impact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3f0;
+  --surface-1: #fcfcfb;
+  --border: #e3e2de;
+  --grid: #ecebe7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #8a8984;
+  --accent: #2a78d6;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+  --row-hover: #f0efec;
+  --rest: #c9c8c3;
+  --good: #1a7f37; --warn: #b26b00; --bad: #c62828;
+  --hero-1: #104281; --hero-2: #2a78d6;
+  --accent-soft: #e4effc; --track: #e9e8e4;
+  --shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface-1: #1a1a19; --border: #2e2e2b; --grid: #262624;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8a8984;
+    --accent: #3987e5;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    --row-hover: #242422;
+    --rest: #4a4a46;
+    --good: #4cc26a; --warn: #e0a030; --bad: #ef6b6b;
+    --hero-1: #0d366b; --hero-2: #1c5cab;
+    --accent-soft: #1b2b42; --track: #2e2e2b;
+    --shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface-1: #1a1a19; --border: #2e2e2b; --grid: #262624;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8a8984;
+  --accent: #3987e5;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  --row-hover: #242422;
+  --rest: #4a4a46;
+  --good: #4cc26a; --warn: #e0a030; --bad: #ef6b6b;
+  --hero-1: #0d366b; --hero-2: #1c5cab;
+  --accent-soft: #1b2b42; --track: #2e2e2b;
+  --shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text-primary);
+  font: 14px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1440px; margin: 0 auto; padding: 20px 16px 56px; }
+b { font-weight: 650; color: var(--text-primary); }
+
+/* Hero header */
+.hero {
+  display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between;
+  padding: 28px 28px 24px; margin-bottom: 16px; border-radius: 20px; color: #fff;
+  background: linear-gradient(135deg, var(--hero-1), var(--hero-2)); box-shadow: var(--shadow);
+}
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .8; font-weight: 600; }
+h1 { font-size: 30px; line-height: 1.15; margin: 4px 0 6px; font-weight: 800; letter-spacing: -.02em; }
+.hero .sub { color: rgba(255,255,255,.85); font-size: 13px; }
+.hero label { color: rgba(255,255,255,.85); font-size: 12px; }
+.hero select, .hero button { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.3); }
+.hero select:hover, .hero button:hover { background: rgba(255,255,255,.24); border-color: rgba(255,255,255,.55); }
+.hero select option { color: var(--text-primary); background: var(--surface-1); }
+#present { background: #fff; color: var(--hero-1); border-color: #fff; font-weight: 650; }
+#present:hover { background: rgba(255,255,255,.9); }
+
+.sub { color: var(--text-secondary); font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+select, input[type=search], button {
+  font: inherit; color: var(--text-primary); background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: 10px; padding: 7px 12px;
+}
+input[type=search] { min-width: 220px; }
+button { cursor: pointer; font-weight: 500; }
+button:hover { border-color: var(--accent); }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 4px; padding: 5px; background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 20px; overflow-x: auto; position: sticky; top: 8px; z-index: 5; box-shadow: var(--shadow);
+}
+.tab { border: 0; background: transparent; padding: 9px 16px; border-radius: 10px; color: var(--text-secondary); white-space: nowrap; font-weight: 600; }
+.tab:hover { color: var(--text-primary); background: var(--row-hover); }
+.tab[aria-selected="true"] { background: var(--accent); color: #fff; }
+.view[hidden] { display: none; }
+.lede { font-size: 15px; color: var(--text-secondary); margin: 0 0 18px; max-width: 920px; }
+.section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); font-weight: 700; margin: 6px 0 10px; }
+
+/* Cards */
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; padding: 20px; min-width: 0; box-shadow: var(--shadow); }
+.card h2 { font-size: 16px; font-weight: 700; margin: 0 0 2px; letter-spacing: -.01em; }
+.card .hint { color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px; }
+
+/* KPI tiles */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kpi { display: flex; gap: 14px; align-items: flex-start; padding: 18px; }
+.kpi .ico { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.kpi .ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kpi .label { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+.kpi .value { font-size: 32px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 4px 0; font-variant-numeric: tabular-nums; }
+.kpi .value small { font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-left: 5px; letter-spacing: 0; }
+.kpi .note { color: var(--text-muted); font-size: 12.5px; line-height: 1.4; }
+
+/* Key takeaways */
+.insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.insight { border-left: 4px solid var(--accent); padding: 16px 18px; }
+.insight .num { font-size: 19px; font-weight: 750; line-height: 1.25; letter-spacing: -.01em; }
+.insight p { margin: 4px 0 0; color: var(--text-secondary); font-size: 13.5px; }
+
+/* Layout */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .grid, .grid.three { grid-template-columns: minmax(0, 1fr); } }
+.chart-box { position: relative; height: 320px; }
+.chart-box.tall { height: 480px; }
+.chart-box.medium { height: 380px; }
+.chart-box.short { height: 250px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; max-height: 600px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--surface-1); color: var(--text-muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; cursor: pointer; user-select: none; z-index: 1; }
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+td:first-child { font-weight: 600; }
+td.num.muted, td.muted { font-weight: 400; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--row-hover); }
+tbody tr.sel { background: var(--row-hover); box-shadow: inset 3px 0 0 var(--accent); }
+.bar-cell { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; margin-left: 8px; }
+.meter { display: inline-block; width: 64px; height: 6px; border-radius: 3px; background: var(--track); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.meter > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.pager { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-top: 12px; color: var(--text-secondary); font-size: 13px; }
+.pager .controls { gap: 4px; }
+.pager button { padding: 5px 11px; }
+.pager button:disabled { opacity: .4; cursor: default; border-color: var(--border); }
+
+.back { margin-bottom: 14px; }
+.detail-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 14px; }
+.detail-head h2 { font-size: 22px; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
+#status { padding: 80px 20px; text-align: center; color: var(--text-secondary); font-size: 15px; }
+#status::before { content: ""; display: block; width: 32px; height: 32px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--track); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+#status.err::before { display: none; }
+#status.err { color: var(--bad); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.muted { color: var(--text-muted); }
+
+/* Presentation mode */
+body.present { font-size: 15px; }
+body.present .wrap { max-width: none; padding: 16px 32px 32px; }
+body.present #samaFilters, body.present #refresh, body.present #themeToggle, body.present .toolbar .controls { display: none !important; }
+body.present .chart-box.tall { height: 560px; }
+body.present .chart-box.medium { height: 460px; }
+body.present .kpi .value { font-size: 38px; }
+body.present .lede { font-size: 17px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">SAMA × RMS · Live data</div>
+      <h1>NGO Laptop Impact Dashboard</h1>
+      <div class="sub" id="subtitle">How many laptops each NGO received, and how much they are being used</div>
+    </div>
+    <div class="controls">
+      <span id="samaFilters" class="controls">
+        <label for="donorFilter">Donor</label>
+        <select id="donorFilter"><option value="">All donors</option></select>
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter"><option value="">All statuses</option></select>
+      </span>
+      <button id="refresh" title="Fetch the latest data from both APIs">↻ Refresh</button>
+      <button id="themeToggle" title="Toggle light/dark">◐</button>
+      <button id="present" title="Fullscreen presentation mode — ← → switch tabs, Esc exits">▶ Present</button>
+    </div>
+  </header>
+
+  <div id="status">Loading data from SAMA and RMS APIs…</div>
+
+  <main id="app" style="display:none">
+    <nav class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-view="overview">Overview</button>
+      <button class="tab" role="tab" data-view="compare">NGO comparison</button>
+      <button class="tab" role="tab" data-view="engagement">Engagement</button>
+      <button class="tab" role="tab" data-view="inventory">Inventory</button>
+      <button class="tab" role="tab" data-view="reach">Reach &amp; growth</button>
+      <button class="tab" role="tab" data-view="rms">RMS usage</button>
+    </nav>
+
+    <section class="view" data-view="overview">
+      <p class="lede">The big picture: how many NGOs have received laptops, how many of those laptops are sending usage data, and how many hours students have spent on them.</p>
+      <div class="kpis" id="kpis"></div>
+      <div class="section-title">Key takeaways</div>
+      <div class="insights" id="insights"></div>
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h2>NGO-wise summary</h2>
+            <div class="hint" style="margin:0">Click a row to open the NGO's detail page. Click a header to sort.</div>
+          </div>
+          <div class="controls">
+            <input type="search" id="ngoSearch" placeholder="Search NGO…">
+            <button id="exportCsv">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table id="ngoTable"><thead></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="compare" hidden>
+      <p class="lede">Which NGOs received the most laptops, and which ones are using them the most. Click any bar to open that NGO.</p>
+      <div class="grid">
+        <div class="card">
+          <h2>Laptops per NGO</h2>
+          <div class="hint">Top 15 NGOs by laptops allocated, split by whether they report to RMS. Click a bar to open the NGO.</div>
+          <div class="chart-box tall"><canvas id="cNgoLaptops"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Watched hours per NGO</h2>
+          <div class="hint">Top 15 NGOs by total RMS usage hours. Click a bar to open the NGO.</div>
+          <div class="chart-box tall"><canvas id="cNgoHours"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" data-view="engagement" hidden>
+      <p class="lede">How intensively laptops are being used. Hours are total screen time recorded by the RMS agent on each laptop.</p>
+      <div class="kpis" id="engKpis"></div>
+      <div class="grid">
+        <div class="card">
+          <h2>Average hours per reporting laptop</h2>
+          <div class="hint">Top 15 NGOs with at least 10 laptops reporting to RMS</div>
+          <div class="chart-box medium"><canvas id="cNgoAvg"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Usage distribution</h2>
+          <div class="hint">Reporting devices grouped by total usage hours</div>
+          <div class="chart-box medium"><canvas id="cHist"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Laptops vs. engagement</h2>
+        <div class="hint">Each dot is an NGO: laptops allocated vs. avg hours per reporting laptop</div>
+        <div class="chart-box medium"><canvas id="cScatter"></canvas></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="inventory" hidden>
+      <p class="lede">Where every laptop in the SAMA inventory currently stands, from receipt and refurbishment through to distribution.</p>
+      <div class="kpis" id="invKpis"></div>
+      <div class="grid">
+        <div class="card">
+          <h2>Inventory status</h2>
+          <div class="hint">SAMA laptops by pipeline status</div>
+          <div class="chart-box medium"><canvas id="cStatus"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Laptops by donor</h2>
+          <div class="hint">SAMA laptops by donor company</div>
+          <div class="chart-box medium"><canvas id="cDonor"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" data-view="reach" hidden>
+      <p class="lede">How quickly laptops are coming online in RMS, and where in India they are being used.</p>
+      <div class="grid">
+        <div class="card">
+          <h2>RMS onboarding over time</h2>
+          <div class="hint">New devices registered in RMS per month</div>
+          <div class="chart-box medium"><canvas id="cTimeline"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Reporting devices by state</h2>
+          <div class="hint">Top 15 states from RMS device location</div>
+          <div class="chart-box medium"><canvas id="cState"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" data-view="rms" hidden>
+      <div class="kpis" id="rmsKpis"></div>
+      <div class="section-title">Key takeaways</div>
+      <div class="insights" id="rmsInsights"></div>
+      <div class="grid">
+        <div class="card">
+          <h2>RMS devices per NGO</h2>
+          <div class="hint">Top 15 NGOs by devices reporting to RMS, split by whether they have any usage. Click a bar for the device list.</div>
+          <div class="chart-box tall"><canvas id="rNgoDevices"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Watched hours per NGO</h2>
+          <div class="hint">Top 15 NGOs by total RMS usage hours</div>
+          <div class="chart-box tall"><canvas id="rNgoHours"></canvas></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h2>Average hours per device</h2>
+          <div class="hint">Top 15 NGOs with at least 10 RMS devices</div>
+          <div class="chart-box medium"><canvas id="rNgoAvg"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Usage distribution</h2>
+          <div class="hint">All RMS devices grouped by total usage hours</div>
+          <div class="chart-box medium"><canvas id="rHist"></canvas></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="toolbar">
+          <div>
+            <h2>NGO-wise RMS summary</h2>
+            <div class="hint" style="margin:0">Click a row to see that NGO's RMS devices. Click a header to sort.</div>
+          </div>
+          <div class="controls">
+            <input type="search" id="rmsSearch" placeholder="Search NGO…">
+            <button id="rmsExport">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table id="rmsTable"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card" id="rmsDevCard" hidden>
+        <div class="detail-head"><h2 id="rmsDevTitle"></h2><button id="rmsDevClose">Close ✕</button></div>
+        <div class="table-wrap"><table id="rmsDevTable"><thead></thead><tbody></tbody></table></div>
+        <div class="pager" id="rmsDevPager"></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="ngo" id="detail" hidden>
+      <button class="back" id="dClose">← Back</button>
+      <div class="card">
+        <div class="detail-head"><h2 id="dTitle"></h2></div>
+        <div class="kpis" id="dKpis"></div>
+        <div class="grid three">
+          <div><h2 style="font-size:14px">Status</h2><div class="chart-box short"><canvas id="dStatus"></canvas></div></div>
+          <div><h2 style="font-size:14px">Models</h2><div class="chart-box short"><canvas id="dModel"></canvas></div></div>
+          <div><h2 style="font-size:14px">Where devices report from</h2><div class="chart-box short"><canvas id="dCity"></canvas></div></div>
+        </div>
+        <h2 style="font-size:14px;margin-top:8px">Devices <span class="muted" id="dDevCount"></span></h2>
+        <div class="table-wrap"><table id="dTable"><thead></thead><tbody></tbody></table></div>
+        <div class="pager" id="dPager"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const SAMA_URL = 'https://sama-api.thesama.in/exec?type=getLaptopData';
+const RMS_URL = 'https://rms-api.thesama.in/api/devices';
+const UNALLOCATED = '(Not allocated)';
+
+let SAMA = [], RMS = [], rmsBySerial = new Map(), samaById = new Map();
+let ngoRows = [], sortKey = 'laptops', sortDir = -1, selectedNgo = null;
+const VIEWS = ['overview', 'compare', 'engagement', 'inventory', 'reach', 'rms'];
+const NOT_IN_SAMA = '(Not found in SAMA)';
+let rmsRows = [], rmsSortKey = 'devices', rmsSortDir = -1, rmsSelected = null;
+let view = 'overview', prevView = 'overview', curRows = [], curAllocated = [];
+const charts = {};
+
+const $ = id => document.getElementById(id);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const series = () => [1,2,3,4,5,6,7,8].map(i => css('--s' + i));
+const norm = s => (s == null ? '' : String(s)).trim().replace(/\s+/g, ' ');
+const key = s => norm(s).toUpperCase();
+const fmt = n => Math.round(n).toLocaleString('en-IN');
+const fmt1 = n => (Math.round(n * 10) / 10).toLocaleString('en-IN');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct = (a, b) => b ? (a / b * 100) : 0;
+const trimZ = s => s.includes('.') ? s.replace(/\.?0+$/, '') : s;
+// Indian-style compact numbers: 56.6K, 2.15 L, 1.2 Cr
+function compact(n) {
+  const a = Math.abs(n);
+  if (a >= 1e7) return trimZ((n / 1e7).toFixed(2)) + ' Cr';
+  if (a >= 1e5) return trimZ((n / 1e5).toFixed(2)) + ' L';
+  if (a >= 1e3) return trimZ((n / 1e3).toFixed(1)) + 'K';
+  return a < 100 ? fmt1(n) : fmt(n);
+}
+const hrsBig = h => h >= 1e5 ? `${trimZ((h / 1e5).toFixed(2))}<small>lakh hrs</small>` : `${fmt(h)}<small>hrs</small>`;
+const yearsOf = h => fmt1(h / 24 / 365);
+const ICONS = {
+  laptop: '<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2.2.6 3.5 2.6 3.5 6"/>',
+  signal: '<path d="M1.5 9a15 15 0 0 1 21 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  chart: '<path d="M4 19V10M10 19V5M16 19v-7M22 19H2"/>',
+  alert: '<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>',
+  box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  zero: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  truck: '<path d="M2 6h11v10H2zM13 10h5l3 3v3h-8"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+  map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
+  fire: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/>',
+};
+
+function parseLoc(l) {
+  if (!l) return null;
+  try { const o = typeof l === 'string' ? JSON.parse(l) : l; return o && o.location_name ? o.location_name : null; }
+  catch { return null; }
+}
+// Some RMS locations come as "City, undefined, India" — infer the state from common cities
+const CITY_STATE = {
+  BENGALURU: 'Karnataka', BANGALORE: 'Karnataka', PUNE: 'Maharashtra', MUMBAI: 'Maharashtra', THANE: 'Maharashtra',
+  NAGPUR: 'Maharashtra', HYDERABAD: 'Telangana', VIJAYAWADA: 'Andhra Pradesh', RAIPUR: 'Chhattisgarh',
+  MANAWAR: 'Madhya Pradesh', KOTHAPET: 'Telangana', CHENNAI: 'Tamil Nadu', DELHI: 'Delhi', 'NEW DELHI': 'Delhi',
+  KOLKATA: 'West Bengal', AHMEDABAD: 'Gujarat', JAIPUR: 'Rajasthan', LUCKNOW: 'Uttar Pradesh', RANCHI: 'Jharkhand',
+};
+function cleanLoc(name) {
+  if (!name || /no internet/i.test(name)) return null;
+  return name.split(',').map(s => s.trim()).filter(s => s && s !== 'undefined').join(', ');
+}
+function stateOf(name) {
+  if (!name) return 'Unknown';
+  const p = name.split(',').map(s => s.trim());
+  const st = p.length >= 3 ? p[p.length - 2] : (p.length === 2 ? p[1] : null);
+  if (st && st !== 'undefined') return st;
+  return CITY_STATE[p[0].toUpperCase()] || 'Unknown';
+}
+function countBy(arr, fn) {
+  const m = new Map();
+  for (const x of arr) { const k = fn(x); m.set(k, (m.get(k) || 0) + 1); }
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+async function load() {
+  $('status').style.display = 'block'; $('status').className = ''; $('status').textContent = 'Loading data from SAMA and RMS APIs…';
+  try {
+    const [s, r] = await Promise.all([
+      fetch(SAMA_URL).then(x => { if (!x.ok) throw new Error('SAMA API ' + x.status); return x.json(); }),
+      fetch(RMS_URL).then(x => { if (!x.ok) throw new Error('RMS API ' + x.status); return x.json(); }),
+    ]);
+    prepare(s, r);
+    $('status').style.display = 'none'; $('app').style.display = 'block';
+    $('subtitle').textContent = `${fmt(SAMA.length)} laptops in SAMA · ${fmt(RMS.length)} devices on RMS · updated ${new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}`;
+    render();
+  } catch (e) {
+    $('status').className = 'err';
+    $('status').textContent = 'Could not load data: ' + e.message;
+  }
+}
+
+function prepare(s, r) {
+  // Canonical NGO display name = most common spelling among variants that differ only by case/spacing
+  const spellings = new Map();
+  for (const x of s) {
+    const n = norm(x['Allocated To']); if (!n) continue;
+    const k = n.toUpperCase();
+    if (!spellings.has(k)) spellings.set(k, new Map());
+    const m = spellings.get(k); m.set(n, (m.get(n) || 0) + 1);
+  }
+  const canon = new Map([...spellings].map(([k, m]) => [k, [...m].sort((a, b) => b[1] - a[1])[0][0]]));
+
+  rmsBySerial = new Map();
+  RMS = r.map(d => {
+    const raw = parseLoc(d.location), loc = cleanLoc(raw);
+    const o = {
+      serial: key(d.serial_number), minutes: parseFloat(d.total_usage_minutes) || 0,
+      created: d.created_at ? new Date(d.created_at) : null, location: loc || 'Unknown', state: loc ? stateOf(raw) : 'Unknown',
+      version: d.rms_version || '—', active: !!d.isactive, rmsNgo: norm(d.ngo_name), rmsDonor: norm(d.donor_name),
+    };
+    o.hours = o.minutes / 60;
+    if (o.serial) rmsBySerial.set(o.serial, o);
+    return o;
+  });
+
+  samaById = new Map();
+  SAMA = s.map(x => {
+    const n = norm(x['Allocated To']);
+    const o = {
+      id: key(x.ID), idRaw: norm(x.ID), ngo: n ? canon.get(n.toUpperCase()) : UNALLOCATED,
+      donor: key(x['Donor Company Name']) || 'UNKNOWN', status: key(x.Status) || 'UNKNOWN',
+      model: norm(x['Manufacturer Model']) || 'Unknown', condition: key(x['Condition Status']) || 'UNKNOWN',
+      location: norm(x['Inventory Location']) || 'Unknown', lastDelivery: x['Last Delivery Date'],
+    };
+    o.rms = o.id ? rmsBySerial.get(o.id) || null : null;
+    if (o.id) samaById.set(o.id, o);
+    return o;
+  });
+  for (const d of RMS) { d.sama = samaById.get(d.serial) || null; d.ngo = d.sama ? d.sama.ngo : NOT_IN_SAMA; }
+
+  fillSelect('donorFilter', countBy(SAMA, x => x.donor), 'All donors');
+  fillSelect('statusFilter', countBy(SAMA, x => x.status), 'All statuses');
+}
+
+function fillSelect(id, entries, allLabel) {
+  const el = $(id), cur = el.value;
+  el.innerHTML = `<option value="">${allLabel}</option>` + entries.map(([k, c]) => `<option value="${esc(k)}">${esc(k)} (${fmt(c)})</option>`).join('');
+  el.value = entries.some(([k]) => k === cur) ? cur : '';
+}
+
+function filtered() {
+  const donor = $('donorFilter').value, status = $('statusFilter').value;
+  return SAMA.filter(x => (!donor || x.donor === donor) && (!status || x.status === status));
+}
+
+function buildNgoRows(rows) {
+  const m = new Map();
+  for (const x of rows) {
+    if (!m.has(x.ngo)) m.set(x.ngo, { ngo: x.ngo, laptops: 0, distributed: 0, reporting: 0, hours: 0, active: 0, notWorking: 0, donors: new Set(), states: new Set(), items: [] });
+    const g = m.get(x.ngo);
+    g.laptops++; g.items.push(x); g.donors.add(x.donor);
+    if (x.status === 'DISTRIBUTED') g.distributed++;
+    if (x.status === 'NOT_WORKING' || x.condition === 'BAD' || x.condition === 'NEEDS_REPAIR') g.notWorking++;
+    if (x.rms) { g.reporting++; g.hours += x.rms.hours; if (x.rms.hours > 0) g.active++; g.states.add(x.rms.state); }
+  }
+  return [...m.values()].map(g => ({
+    ...g, coverage: pct(g.reporting, g.laptops), avg: g.reporting ? g.hours / g.reporting : 0,
+    donorList: [...g.donors].join(', '), stateCount: g.states.size,
+  }));
+}
+
+function render() {
+  const rows = filtered();
+  ngoRows = buildNgoRows(rows);
+  curRows = rows;
+  curAllocated = ngoRows.filter(g => g.ngo !== UNALLOCATED);
+  renderView();
+}
+
+// Only the active view is drawn; charts in hidden views would get zero size anyway
+function renderView() {
+  if (view === 'ngo' && !ngoRows.some(r => r.ngo === selectedNgo)) view = prevView;
+  document.querySelectorAll('.view').forEach(v => { v.hidden = v.dataset.view !== view; });
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === (view === 'ngo' ? prevView : view))));
+  const rows = curRows, allocated = curAllocated;
+  if (view === 'overview') { renderKpis(rows, allocated); renderTable(); }
+  else if (view === 'compare') renderCompare(allocated);
+  else if (view === 'engagement') renderEngagement(rows, allocated);
+  else if (view === 'inventory') renderInventory(rows, allocated);
+  else if (view === 'reach') renderReach(rows);
+  else if (view === 'rms') renderRms();
+  else if (view === 'ngo') renderDetail(ngoRows.find(r => r.ngo === selectedNgo));
+  $('samaFilters').style.display = view === 'rms' ? 'none' : '';
+}
+
+function setView(v) {
+  view = v;
+  if (VIEWS.includes(v)) { prevView = v; try { history.replaceState(null, '', '#' + v); } catch {} }
+  renderView();
+  window.scrollTo({ top: 0 });
+}
+
+function kpi(label, value, note, icon = 'chart') {
+  return `<div class="card kpi"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[icon] || ''}</svg></div>
+    <div><div class="label">${label}</div><div class="value">${value}</div>${note ? `<div class="note">${note}</div>` : ''}</div></div>`;
+}
+function insight(head, text) {
+  return `<div class="card insight"><div class="num">${head}</div><p>${text}</p></div>`;
+}
+const sum = (arr, k) => arr.reduce((a, g) => a + g[k], 0);
+
+function renderInsights(allocated) {
+  const alloc = sum(allocated, 'laptops'), rep = sum(allocated, 'reporting');
+  const out = [];
+  const topL = topBy(allocated, 'laptops', 1)[0];
+  if (topL) out.push(insight(esc(topL.ngo), `received the most laptops: <b>${fmt(topL.laptops)}</b>, which is ${Math.round(pct(topL.laptops, alloc))}% of everything allocated.`));
+  out.push(insight(`${Math.round(pct(rep, alloc))}% of laptops report usage`, `<b>${fmt(rep)}</b> of ${fmt(alloc)} allocated laptops are sending usage data to RMS.`));
+  const topAvg = topBy(allocated.filter(g => g.reporting >= 10), 'avg', 1)[0];
+  if (topAvg) out.push(insight(`${fmt1(topAvg.avg)} hrs per laptop`, `<b>${esc(topAvg.ngo)}</b> has the most-used laptops on average, across ${fmt(topAvg.reporting)} reporting laptops.`));
+  const silent = allocated.filter(g => g.reporting === 0).sort((a, b) => b.laptops - a.laptops);
+  if (silent.length) out.push(insight(`${silent.length} NGOs with no usage data`, `together hold <b>${fmt(sum(silent, 'laptops'))}</b> laptops not yet on RMS, e.g. ${silent.slice(0, 2).map(g => esc(g.ngo)).join(' and ')}.`));
+  $('insights').innerHTML = out.join('');
+}
+
+function renderKpis(rows, allocated) {
+  // Overview counts only laptops allocated to an NGO, so tiles and takeaways agree
+  const reporting = sum(allocated, 'reporting');
+  const hours = sum(allocated, 'hours');
+  const allocCount = sum(allocated, 'laptops');
+  $('kpis').innerHTML = [
+    kpi('NGOs served', fmt(allocated.length), 'organisations that received laptops', 'users'),
+    kpi('Laptops allocated', fmt(allocCount), `${Math.round(pct(allocCount, rows.length))}% of ${fmt(rows.length)} laptops in inventory`, 'laptop'),
+    kpi('Sending usage data', fmt(reporting), `${Math.round(pct(reporting, allocCount))}% of allocated laptops report to RMS`, 'signal'),
+    kpi('Hours watched', hrsBig(hours), `${fmt(hours)} hrs · ≈ ${yearsOf(hours)} years of non-stop use`, 'clock'),
+    kpi('Average per laptop', `${fmt1(reporting ? hours / reporting : 0)}<small>hrs</small>`, 'per laptop that reports usage', 'chart'),
+  ].join('');
+  renderInsights(allocated);
+}
+
+Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+Chart.defaults.font.size = 12;
+// Draws each bar's value at its end, so numbers are readable without hovering
+Chart.register({
+  id: 'valueLabels',
+  afterDatasetsDraw(chart, args, opts) {
+    if (!opts || !opts.fmt) return;
+    const metas = chart.getSortedVisibleDatasetMetas();
+    if (!metas.length) return;
+    const last = metas[metas.length - 1], horiz = chart.options.indexAxis === 'y', ctx = chart.ctx;
+    ctx.save();
+    ctx.font = '600 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = css('--text-secondary');
+    last.data.forEach((bar, i) => {
+      const v = opts.total ? opts.total(i) : chart.data.datasets[last.index].data[i];
+      const txt = opts.fmt(v, i);
+      if (!txt) return;
+      if (horiz) { ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(txt, bar.x + 8, bar.y); }
+      else { ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(txt, bar.x, bar.y - 6); }
+    });
+    ctx.restore();
+  },
+});
+
+function baseOpts(extra = {}) {
+  const text = css('--text-secondary'), grid = css('--grid');
+  return Object.assign({
+    responsive: true, maintainAspectRatio: false, animation: false,
+    plugins: {
+      legend: { display: false, labels: { color: text, boxWidth: 12, boxHeight: 12, usePointStyle: true } },
+      tooltip: { backgroundColor: css('--surface-1'), titleColor: css('--text-primary'), bodyColor: text, borderColor: css('--border'), borderWidth: 1, padding: 12, cornerRadius: 10, titleFont: { weight: '700' } },
+    },
+    scales: {
+      x: { ticks: { color: text }, grid: { color: grid }, border: { display: false } },
+      y: { ticks: { color: text }, grid: { color: grid }, border: { display: false } },
+    },
+  }, extra);
+}
+
+function draw(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart($(id), cfg);
+  return charts[id];
+}
+
+const trunc = (s, n = 30) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+
+function hbar(id, entries, { label, color, valueFmt = fmt, labelFmt, onClick, stacked, room = 70 } = {}) {
+  const opts = baseOpts({ indexAxis: 'y' });
+  opts.scales.y.grid.display = false;
+  opts.scales.y.ticks.color = css('--text-primary');
+  opts.scales.x.display = false;
+  opts.layout = { padding: { right: room } };
+  opts.plugins.valueLabels = { fmt: labelFmt || valueFmt, total: stacked ? i => entries[i][1] : null };
+  opts.scales.y.ticks.callback = function (v) { return trunc(this.getLabelForValue(v)); };
+  opts.plugins.tooltip.callbacks = { label: c => `${c.dataset.label}: ${valueFmt(c.raw)}` };
+  if (onClick) {
+    opts.onClick = (e, els) => { if (els.length) onClick(entries[els[0].index][0]); };
+    opts.onHover = (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; };
+  }
+  let datasets;
+  if (stacked) {
+    opts.scales.x.stacked = opts.scales.y.stacked = true;
+    opts.plugins.legend.display = true; opts.plugins.legend.position = 'bottom';
+    datasets = stacked.map(s => ({ label: s.label, data: entries.map(s.value), backgroundColor: s.color, borderRadius: 4, borderSkipped: false, borderColor: css('--surface-1'), borderWidth: { right: 2 }, barPercentage: 0.8 }));
+  } else {
+    datasets = [{ label, data: entries.map(e => e[1]), backgroundColor: color || css('--s1'), borderRadius: 4, barPercentage: 0.8 }];
+  }
+  return draw(id, { type: 'bar', data: { labels: entries.map(e => e[0]), datasets }, options: opts });
+}
+
+const topBy = (arr, k, n = 15) => [...arr].sort((a, b) => b[k] - a[k]).slice(0, n);
+const pick = ngo => selectNgo(ngo);
+
+function renderCompare(allocated) {
+  const S = series();
+
+  const byLaptops = topBy(allocated, 'laptops');
+  hbar('cNgoLaptops', byLaptops.map(g => [g.ngo, g.laptops, g]), {
+    onClick: pick, room: 120,
+    labelFmt: (v, i) => `${fmt(v)} · ${Math.round(pct(byLaptops[i].reporting, v))}% on RMS`,
+    stacked: [
+      { label: 'Reporting to RMS', value: e => e[2].reporting, color: S[0] },
+      { label: 'Not reporting', value: e => e[2].laptops - e[2].reporting, color: css('--rest') },
+    ],
+  });
+  hbar('cNgoHours', topBy(allocated, 'hours').map(g => [g.ngo, g.hours]), { label: 'Usage hours', color: S[1], onClick: pick, labelFmt: v => compact(v) + ' hrs', room: 80 });
+}
+
+function renderEngagement(rows, allocated) {
+  const S = series();
+  const rep = rows.filter(x => x.rms);
+  const hrs = rep.reduce((a, x) => a + x.rms.hours, 0);
+  const zero = rep.filter(x => x.rms.hours === 0).length;
+  const heavy = rep.filter(x => x.rms.hours >= 100).length;
+  $('engKpis').innerHTML = [
+    kpi('Average use per laptop', `${fmt1(rep.length ? hrs / rep.length : 0)}<small>hrs</small>`, `across ${fmt(rep.length)} laptops that report usage`, 'clock'),
+    kpi('Heavily used (100+ hrs)', fmt(heavy), `${fmt1(pct(heavy, rep.length))}% of reporting laptops`, 'fire'),
+    kpi('Never used (0 hrs)', fmt(zero), `${fmt1(pct(zero, rep.length))}% of reporting laptops`, 'zero'),
+  ].join('');
+  hbar('cNgoAvg', topBy(allocated.filter(g => g.reporting >= 10), 'avg').map(g => [g.ngo, g.avg]), { label: 'Avg hours per laptop', color: S[2], valueFmt: fmt1, labelFmt: v => fmt1(v) + ' hrs', onClick: pick });
+
+  // Scatter: laptops vs avg hours
+  const pts = allocated.filter(g => g.reporting > 0).map(g => ({ x: g.laptops, y: g.avg, ngo: g.ngo, r: g.reporting }));
+  const so = baseOpts();
+  so.scales.x.type = 'logarithmic'; so.scales.x.title = { display: true, text: 'Laptops allocated (log scale)', color: css('--text-secondary') };
+  so.scales.y.title = { display: true, text: 'Avg hours / reporting laptop', color: css('--text-secondary') };
+  so.scales.x.ticks.callback = v => [1, 10, 100, 1000, 10000].includes(v) ? fmt(v) : '';
+  so.plugins.tooltip.callbacks = { label: c => `${c.raw.ngo}: ${fmt(c.raw.x)} laptops, ${fmt1(c.raw.y)} avg hrs (${fmt(c.raw.r)} reporting)` };
+  so.onClick = (e, els) => { if (els.length) pick(pts[els[0].index].ngo); };
+  so.onHover = (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; };
+  draw('cScatter', { type: 'scatter', data: { datasets: [{ label: 'NGO', data: pts, backgroundColor: S[0] + 'b3', borderColor: css('--surface-1'), borderWidth: 2, pointRadius: 6, pointHoverRadius: 9 }] }, options: so });
+
+
+  // Usage histogram over reporting devices in the filtered set
+  const buckets = [['0 h', 0, 0], ['<10 h', 0.0001, 10], ['10–50 h', 10, 50], ['50–100 h', 50, 100], ['100–250 h', 100, 250], ['250–500 h', 250, 500], ['500–1000 h', 500, 1000], ['1000+ h', 1000, Infinity]];
+  const reporting = rows.filter(x => x.rms).map(x => x.rms.hours);
+  const hist = buckets.map(([l, lo, hi]) => [l, reporting.filter(h => lo === 0 && hi === 0 ? h === 0 : h >= lo && h < hi).length]);
+  const ho = baseOpts();
+  ho.scales.x.grid.display = false;
+  ho.scales.y.display = false;
+  ho.layout = { padding: { top: 24 } };
+  ho.plugins.valueLabels = { fmt: v => fmt(v) };
+  ho.plugins.tooltip.callbacks = { label: c => `${fmt(c.raw)} devices (${fmt1(pct(c.raw, hist.reduce((a, h) => a + h[1], 0)))}%)` };
+  draw('cHist', { type: 'bar', data: { labels: hist.map(h => h[0]), datasets: [{ data: hist.map(h => h[1]), backgroundColor: S[0], borderRadius: 4, barPercentage: 0.9, categoryPercentage: 0.95 }] }, options: ho });
+
+}
+
+function renderInventory(rows, allocated) {
+  const S = series();
+  const distributed = rows.filter(x => x.status === 'DISTRIBUTED').length;
+  const issues = rows.filter(x => x.status === 'NOT_WORKING' || x.condition === 'BAD' || x.condition === 'NEEDS_REPAIR').length;
+  const unalloc = rows.length - allocated.reduce((a, g) => a + g.laptops, 0);
+  const unmatched = RMS.filter(d => !d.sama).length;
+  $('invKpis').innerHTML = [
+    kpi('Laptops in inventory', fmt(rows.length), 'every laptop recorded in SAMA', 'box'),
+    kpi('Distributed', fmt(distributed), `${fmt1(pct(distributed, rows.length))}% of inventory`, 'truck'),
+    kpi('Not yet allocated', fmt(unalloc), 'no NGO assigned yet', 'laptop'),
+    kpi('With issues', fmt(issues), 'not working, bad or needs repair', 'alert'),
+    kpi('RMS devices not in SAMA', fmt(unmatched), 'serial number has no SAMA match', 'search'),
+  ].join('');
+  hbar('cStatus', countBy(rows, x => x.status), { label: 'Laptops', color: S[0], labelFmt: v => `${fmt(v)} · ${Math.round(pct(v, rows.length))}%`, room: 100 });
+  hbar('cDonor', countBy(rows, x => x.donor).slice(0, 12), { label: 'Laptops', color: S[6] });
+}
+
+function renderReach(rows) {
+  const S = series();
+  // Timeline (all RMS devices; filtered to matched rows when a filter is active)
+  const filterActive = $('donorFilter').value || $('statusFilter').value;
+  const devs = filterActive ? rows.filter(x => x.rms).map(x => x.rms) : RMS;
+  const months = countBy(devs.filter(d => d.created), d => d.created.toISOString().slice(0, 7)).sort((a, b) => a[0].localeCompare(b[0]));
+  const to = baseOpts();
+  to.scales.x.grid.display = false;
+  to.plugins.legend.display = true; to.plugins.legend.position = 'bottom';
+  to.interaction = { mode: 'index', intersect: false };
+  to.plugins.tooltip.callbacks = { label: c => `${c.dataset.label}: ${fmt(c.raw)}` };
+  to.plugins.legend.display = false;
+  to.scales.y.display = false;
+  to.layout = { padding: { top: 24 } };
+  to.plugins.valueLabels = { fmt: v => compact(v) };
+  const labels = months.map(m => new Date(m[0] + '-01').toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }));
+  draw('cTimeline', { type: 'bar', data: { labels, datasets: [
+    { label: 'New devices', data: months.map(m => m[1]), backgroundColor: S[0], borderRadius: 4 },
+  ] }, options: to });
+
+  hbar('cState', countBy(devs, d => d.state).slice(0, 15), { label: 'Devices', color: S[2] });
+}
+
+const COLS = [
+  { k: 'ngo', l: 'NGO' },
+  { k: 'laptops', l: 'Laptops', num: true, bar: true },
+  { k: 'distributed', l: 'Distributed', num: true },
+  { k: 'reporting', l: 'Reporting (RMS)', num: true },
+  { k: 'coverage', l: 'Coverage', num: true, f: fmt1, meter: true },
+  { k: 'active', l: 'Used >0 h', num: true },
+  { k: 'hours', l: 'Total hours', num: true },
+  { k: 'avg', l: 'Avg h / laptop', num: true, f: fmt1 },
+  { k: 'notWorking', l: 'Issues', num: true },
+  { k: 'stateCount', l: 'States', num: true },
+  { k: 'donorList', l: 'Donors' },
+];
+
+function renderTable() {
+  const q = $('ngoSearch').value.trim().toLowerCase();
+  const rows = ngoRows.filter(g => !q || g.ngo.toLowerCase().includes(q))
+    .sort((a, b) => { const x = a[sortKey], y = b[sortKey]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * sortDir; });
+  const max = Math.max(1, ...ngoRows.map(g => g.laptops));
+  $('ngoTable').querySelector('thead').innerHTML = '<tr>' + COLS.map(c =>
+    `<th class="${c.num ? 'num' : ''}" data-k="${c.k}">${c.l}${sortKey === c.k ? (sortDir < 0 ? ' ▾' : ' ▴') : ''}</th>`).join('') + '</tr>';
+  $('ngoTable').querySelector('tbody').innerHTML = rows.map(g => `<tr data-ngo="${esc(g.ngo)}" class="${g.ngo === selectedNgo ? 'sel' : ''}">` + COLS.map(c => {
+    const v = g[c.k];
+    if (!c.num) return `<td title="${esc(v)}">${esc(trunc(String(v), c.k === 'ngo' ? 48 : 40))}</td>`;
+    if (c.meter) return `<td class="num"><span class="meter"><span style="width:${Math.min(100, v)}%"></span></span>${Math.round(v)}%</td>`;
+    return `<td class="num">${(c.f || fmt)(v)}${c.bar ? `<span class="bar-cell" style="width:${Math.max(2, v / max * 60)}px"></span>` : ''}</td>`;
+  }).join('') + '</tr>').join('') || `<tr><td colspan="${COLS.length}" class="muted">No NGOs match.</td></tr>`;
+}
+
+// ---- RMS view: RMS devices only, NGO taken from SAMA "Allocated To" ----
+const HOUR_BUCKETS = [['0 h', 0, 0], ['<10 h', 0.0001, 10], ['10–50 h', 10, 50], ['50–100 h', 50, 100], ['100–250 h', 100, 250], ['250–500 h', 250, 500], ['500–1000 h', 500, 1000], ['1000+ h', 1000, Infinity]];
+
+function buildRmsRows() {
+  const m = new Map();
+  for (const d of RMS) {
+    if (!m.has(d.ngo)) m.set(d.ngo, { ngo: d.ngo, devices: 0, used: 0, active: 0, hours: 0, states: new Map(), latest: null, items: [] });
+    const g = m.get(d.ngo);
+    g.devices++; g.items.push(d); g.hours += d.hours;
+    if (d.hours > 0) g.used++;
+    if (d.active) g.active++;
+    if (d.state !== 'Unknown') g.states.set(d.state, (g.states.get(d.state) || 0) + 1);
+    if (d.created && (!g.latest || d.created > g.latest)) g.latest = d.created;
+  }
+  return [...m.values()].map(g => {
+    const hs = g.items.map(d => d.hours).sort((a, b) => a - b);
+    const topState = [...g.states].sort((a, b) => b[1] - a[1])[0];
+    return { ...g, avg: g.hours / g.devices, median: hs[Math.floor(hs.length / 2)] || 0, usedPct: pct(g.used, g.devices),
+      stateCount: g.states.size, topState: topState ? topState[0] : '—', latestStr: g.latest ? g.latest.toISOString().slice(0, 10) : '' };
+  });
+}
+
+const RMS_COLS = [
+  { k: 'ngo', l: 'NGO (SAMA Allocated To)' },
+  { k: 'devices', l: 'RMS devices', num: true, bar: true },
+  { k: 'used', l: 'Used >0 h', num: true },
+  { k: 'usedPct', l: 'Used', num: true, f: fmt1, meter: true },
+  { k: 'hours', l: 'Total hours', num: true },
+  { k: 'avg', l: 'Avg h / device', num: true, f: fmt1 },
+  { k: 'median', l: 'Median h', num: true, f: fmt1 },
+  { k: 'stateCount', l: 'States', num: true },
+  { k: 'topState', l: 'Top state' },
+  { k: 'latestStr', l: 'Last registered' },
+];
+
+function renderRms() {
+  const S = series();
+  rmsRows = buildRmsRows();
+  const named = rmsRows.filter(g => g.ngo !== NOT_IN_SAMA && g.ngo !== UNALLOCATED);
+  const hours = RMS.reduce((a, d) => a + d.hours, 0);
+  const used = RMS.filter(d => d.hours > 0).length;
+  const notInSama = RMS.filter(d => !d.sama).length;
+  $('rmsKpis').innerHTML = [
+    kpi('Devices on RMS', fmt(RMS.length), `${fmt(RMS.length - notInSama)} matched to a SAMA laptop`, 'signal'),
+    kpi('NGOs with RMS devices', fmt(named.length), 'by SAMA "Allocated To"', 'users'),
+    kpi('Hours watched', hrsBig(hours), `${fmt(hours)} hrs · ${fmt1(RMS.length ? hours / RMS.length : 0)} hrs per device`, 'clock'),
+    kpi('Devices in use', fmt(used), `${fmt1(pct(used, RMS.length))}% have recorded some usage`, 'check'),
+    kpi('Not found in SAMA', fmt(notInSama), 'serial number has no SAMA match', 'search'),
+  ].join('');
+
+  const byDev = topBy(named, 'devices');
+  hbar('rNgoDevices', byDev.map(g => [g.ngo, g.devices, g]), {
+    onClick: selectRmsNgo, room: 110,
+    labelFmt: (v, i) => `${fmt(v)} · ${Math.round(byDev[i].usedPct)}% used`,
+    stacked: [
+      { label: 'Used >0 h', value: e => e[2].used, color: S[0] },
+      { label: '0 h', value: e => e[2].devices - e[2].used, color: css('--rest') },
+    ],
+  });
+  hbar('rNgoHours', topBy(named, 'hours').map(g => [g.ngo, g.hours]), { label: 'Usage hours', color: S[1], onClick: selectRmsNgo, labelFmt: v => compact(v) + ' hrs', room: 80 });
+  hbar('rNgoAvg', topBy(named.filter(g => g.devices >= 10), 'avg').map(g => [g.ngo, g.avg]), { label: 'Avg hours per device', color: S[2], valueFmt: fmt1, labelFmt: v => fmt1(v) + ' hrs', onClick: selectRmsNgo });
+
+  const hist = HOUR_BUCKETS.map(([l, lo, hi]) => [l, RMS.filter(d => lo === 0 && hi === 0 ? d.hours === 0 : d.hours >= lo && d.hours < hi).length]);
+  const ho = baseOpts();
+  ho.scales.x.grid.display = false;
+  ho.scales.y.display = false;
+  ho.layout = { padding: { top: 24 } };
+  ho.plugins.valueLabels = { fmt: v => fmt(v) };
+  ho.plugins.tooltip.callbacks = { label: c => `${fmt(c.raw)} devices (${fmt1(pct(c.raw, hist.reduce((a, h) => a + h[1], 0)))}%)` };
+  draw('rHist', { type: 'bar', data: { labels: hist.map(h => h[0]), datasets: [{ data: hist.map(h => h[1]), backgroundColor: S[0], borderRadius: 4, barPercentage: 0.9, categoryPercentage: 0.95 }] }, options: ho });
+
+  const out = [];
+  const topH = topBy(named, 'hours', 1)[0];
+  if (topH) out.push(insight(esc(topH.ngo), `accounts for <b>${Math.round(pct(topH.hours, hours))}%</b> of all hours watched (${compact(topH.hours)} hrs).`));
+  const topA = topBy(named.filter(g => g.devices >= 10), 'avg', 1)[0];
+  if (topA) out.push(insight(`${fmt1(topA.avg)} hrs per device`, `<b>${esc(topA.ngo)}</b> has the highest average use among NGOs with 10+ devices.`));
+  const hs = RMS.map(d => d.hours).sort((a, b) => a - b), med = hs[Math.floor(hs.length / 2)] || 0;
+  out.push(insight(`Half of devices: under ${fmt1(med)} hrs`, `The typical (median) device has recorded <b>${fmt1(med)} hrs</b>, while the average is pulled up to ${fmt1(hours / (RMS.length || 1))} hrs by heavy users.`));
+  $('rmsInsights').innerHTML = out.join('');
+
+  renderRmsTable();
+  renderRmsDevices();
+}
+
+function renderRmsTable() {
+  const q = $('rmsSearch').value.trim().toLowerCase();
+  const rows = rmsRows.filter(g => !q || g.ngo.toLowerCase().includes(q))
+    .sort((a, b) => { const x = a[rmsSortKey], y = b[rmsSortKey]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * rmsSortDir; });
+  const max = Math.max(1, ...rmsRows.map(g => g.devices));
+  $('rmsTable').querySelector('thead').innerHTML = '<tr>' + RMS_COLS.map(c =>
+    `<th class="${c.num ? 'num' : ''}" data-k="${c.k}">${c.l}${rmsSortKey === c.k ? (rmsSortDir < 0 ? ' ▾' : ' ▴') : ''}</th>`).join('') + '</tr>';
+  $('rmsTable').querySelector('tbody').innerHTML = rows.map(g => `<tr data-ngo="${esc(g.ngo)}" class="${g.ngo === rmsSelected ? 'sel' : ''}">` + RMS_COLS.map(c => {
+    const v = g[c.k];
+    if (!c.num) return `<td title="${esc(v)}">${esc(trunc(String(v), c.k === 'ngo' ? 48 : 30))}</td>`;
+    if (c.meter) return `<td class="num"><span class="meter"><span style="width:${Math.min(100, v)}%"></span></span>${Math.round(v)}%</td>`;
+    return `<td class="num">${(c.f || fmt)(v)}${c.bar ? `<span class="bar-cell" style="width:${Math.max(2, v / max * 60)}px"></span>` : ''}</td>`;
+  }).join('') + '</tr>').join('') || `<tr><td colspan="${RMS_COLS.length}" class="muted">No NGOs match.</td></tr>`;
+}
+
+function selectRmsNgo(ngo) {
+  rmsSelected = ngo;
+  renderRmsTable(); renderRmsDevices();
+  $('rmsDevCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Paginated table body: keeps page/size per table, resets to page 1 when the dataset key changes
+const pagers = {};
+function paginate(tableId, pagerId, dataKey, items, rowFn) {
+  const st = pagers[tableId] || (pagers[tableId] = { page: 1, size: 50 });
+  if (st.key !== dataKey) { st.key = dataKey; st.page = 1; }
+  Object.assign(st, { items, rowFn, pagerId });
+  drawPage(tableId);
+}
+function drawPage(tableId) {
+  const st = pagers[tableId], n = st.items.length, pages = Math.max(1, Math.ceil(n / st.size));
+  st.page = Math.min(Math.max(1, st.page), pages);
+  const start = (st.page - 1) * st.size, end = Math.min(n, start + st.size);
+  $(tableId).querySelector('tbody').innerHTML = st.items.slice(start, end).map((x, i) => st.rowFn(x, start + i + 1)).join('');
+  $(tableId).closest('.table-wrap').scrollTop = 0;
+  const dis = c => c ? 'disabled' : '';
+  $(st.pagerId).innerHTML = `
+    <div>Showing ${n ? fmt(start + 1) : 0}–${fmt(end)} of ${fmt(n)} laptops · sorted by most used</div>
+    <div class="controls">
+      <label>Rows <select data-act="size">${[25, 50, 100, 250].map(v => `<option ${v === st.size ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+      <button data-act="first" ${dis(st.page === 1)}>«</button>
+      <button data-act="prev" ${dis(st.page === 1)}>‹ Prev</button>
+      <span>Page ${st.page} of ${pages}</span>
+      <button data-act="next" ${dis(st.page === pages)}>Next ›</button>
+      <button data-act="last" ${dis(st.page === pages)}>»</button>
+    </div>`;
+}
+function wirePager(tableId, pagerId) {
+  const el = $(pagerId);
+  el.addEventListener('click', e => {
+    const b = e.target.closest('button[data-act]'); const st = pagers[tableId];
+    if (!b || b.disabled || !st) return;
+    const pages = Math.ceil(st.items.length / st.size);
+    st.page = { first: 1, prev: st.page - 1, next: st.page + 1, last: pages }[b.dataset.act];
+    drawPage(tableId);
+  });
+  el.addEventListener('change', e => {
+    const st = pagers[tableId];
+    if (e.target.dataset.act !== 'size' || !st) return;
+    const firstRow = (st.page - 1) * st.size;
+    st.size = +e.target.value; st.page = Math.floor(firstRow / st.size) + 1;
+    drawPage(tableId);
+  });
+}
+
+function renderRmsDevices() {
+  const g = rmsRows.find(r => r.ngo === rmsSelected);
+  $('rmsDevCard').hidden = !g;
+  if (!g) return;
+  const devs = [...g.items].sort((a, b) => (b.hours - a.hours) || a.serial.localeCompare(b.serial));
+  $('rmsDevTitle').textContent = `${g.ngo} · ${fmt(g.devices)} RMS devices · ${fmt(g.hours)} h`;
+  $('rmsDevTable').querySelector('thead').innerHTML = '<tr><th class="num">#</th><th>Serial number</th><th class="num">Usage hours</th><th>Location</th><th>State</th><th>RMS version</th><th>Active</th><th>Registered</th></tr>';
+  paginate('rmsDevTable', 'rmsDevPager', g.ngo, devs, (d, i) => `<tr>
+    <td class="num muted">${i}</td><td>${esc(d.serial)}</td><td class="num">${fmt1(d.hours)}</td><td>${esc(d.location)}</td><td>${esc(d.state)}</td>
+    <td>${esc(d.version)}</td><td>${d.active ? 'Yes' : 'No'}</td><td>${d.created ? d.created.toLocaleDateString('en-IN') : ''}</td></tr>`);
+}
+
+function exportRmsCsv() {
+  const lines = [RMS_COLS.map(c => c.l), ...[...rmsRows].sort((a, b) => b.devices - a.devices).map(g => RMS_COLS.map(c => c.num ? (c.f ? fmt1(g[c.k]).replace(/,/g, '') : Math.round(g[c.k])) : g[c.k]))];
+  const csv = lines.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `rms-ngo-summary-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+}
+
+$('rmsSearch').oninput = renderRmsTable;
+wirePager('rmsDevTable', 'rmsDevPager');
+wirePager('dTable', 'dPager');
+$('rmsExport').onclick = exportRmsCsv;
+$('rmsDevClose').onclick = () => { rmsSelected = null; renderRmsTable(); renderRmsDevices(); };
+$('rmsTable').addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (th) { const k = th.dataset.k; rmsSortDir = rmsSortKey === k ? -rmsSortDir : (['ngo', 'topState', 'latestStr'].includes(k) ? 1 : -1); rmsSortKey = k; renderRmsTable(); return; }
+  const tr = e.target.closest('tr[data-ngo]');
+  if (tr) selectRmsNgo(tr.dataset.ngo);
+});
+
+function selectNgo(ngo) {
+  if (!ngoRows.some(r => r.ngo === ngo)) return;
+  selectedNgo = ngo;
+  setView('ngo');
+}
+function closeDetail() { setView(prevView); }
+
+function renderDetail(g) {
+  const S = series();
+  $('dTitle').innerHTML = `${esc(g.ngo)} <span class="pill">${esc(g.donorList)}</span>`;
+  const zero = g.items.filter(x => x.rms && x.rms.hours === 0).length;
+  const versions = countBy(g.items.filter(x => x.rms), x => x.rms.version).slice(0, 3).map(([v, c]) => `${v} (${c})`).join(', ');
+  $('dKpis').innerHTML = [
+    kpi('Laptops allocated', fmt(g.laptops), `${fmt(g.distributed)} distributed`, 'laptop'),
+    kpi('Sending usage data', fmt(g.reporting), `${Math.round(g.coverage)}% of this NGO's laptops`, 'signal'),
+    kpi('Hours watched', hrsBig(g.hours), `${fmt(g.hours)} hrs in total`, 'clock'),
+    kpi('Average per laptop', `${fmt1(g.avg)}<small>hrs</small>`, `${fmt(zero)} reporting laptops have 0 hrs`, 'chart'),
+    kpi('Laptops with issues', fmt(g.notWorking), 'not working, bad or needs repair', 'alert'),
+    kpi('States', fmt(g.stateCount), versions ? 'RMS versions: ' + versions : 'no RMS devices', 'map'),
+  ].join('');
+
+  hbar('dStatus', countBy(g.items, x => x.status), { label: 'Laptops', color: S[0] });
+  hbar('dModel', countBy(g.items, x => x.model).slice(0, 8), { label: 'Laptops', color: S[6] });
+  const cities = countBy(g.items.filter(x => x.rms), x => x.rms.location).slice(0, 8);
+  hbar('dCity', cities.length ? cities : [['No RMS data', 0]], { label: 'Devices', color: S[2] });
+
+  const devs = [...g.items].sort((a, b) => ((b.rms ? b.rms.hours : -1) - (a.rms ? a.rms.hours : -1)) || a.idRaw.localeCompare(b.idRaw));
+  $('dDevCount').textContent = `(${fmt(devs.length)})`;
+  $('dTable').querySelector('thead').innerHTML = '<tr><th class="num">#</th><th>Serial / ID</th><th>Model</th><th>Donor</th><th>Status</th><th>Condition</th><th class="num">Usage hours</th><th>RMS location</th><th>RMS version</th><th>RMS since</th></tr>';
+  paginate('dTable', 'dPager', g.ngo, devs, (x, i) => `<tr>
+    <td class="num muted">${i}</td><td>${esc(x.idRaw)}</td><td>${esc(x.model)}</td><td>${esc(x.donor)}</td><td>${esc(x.status)}</td><td>${esc(x.condition)}</td>
+    <td class="num">${x.rms ? fmt1(x.rms.hours) : '<span class="muted">not reporting</span>'}</td>
+    <td>${x.rms ? esc(x.rms.location) : ''}</td><td>${x.rms ? esc(x.rms.version) : ''}</td>
+    <td>${x.rms && x.rms.created ? x.rms.created.toLocaleDateString('en-IN') : ''}</td></tr>`);
+}
+
+function exportCsv() {
+  const head = COLS.map(c => c.l);
+  const lines = [head, ...ngoRows.sort((a, b) => b.laptops - a.laptops).map(g => COLS.map(c => c.num ? (c.f ? fmt1(g[c.k]).replace(/,/g, '') : Math.round(g[c.k])) : g[c.k]))];
+  const csv = lines.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `ngo-laptop-summary-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+}
+
+$('donorFilter').onchange = $('statusFilter').onchange = render;
+$('ngoSearch').oninput = renderTable;
+$('refresh').onclick = load;
+$('exportCsv').onclick = exportCsv;
+$('dClose').onclick = closeDetail;
+$('ngoTable').addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (th) { const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : (k === 'ngo' || k === 'donorList' ? 1 : -1); sortKey = k; renderTable(); return; }
+  const tr = e.target.closest('tr[data-ngo]');
+  if (tr) selectNgo(tr.dataset.ngo);
+});
+$('themeToggle').onclick = () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+  if (SAMA.length) render();
+};
+try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (SAMA.length) render(); });
+
+function setPresent(on) {
+  document.body.classList.toggle('present', on);
+  $('present').textContent = on ? '✕ Exit' : '▶ Present';
+}
+$('present').onclick = () => {
+  const on = !document.body.classList.contains('present');
+  setPresent(on);
+  if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+};
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) setPresent(false); });
+document.addEventListener('keydown', e => {
+  if (!document.body.classList.contains('present') || e.target.matches('input, select, textarea')) return;
+  const i = VIEWS.indexOf(view === 'ngo' ? prevView : view);
+  if (e.key === 'ArrowRight') setView(VIEWS[(i + 1) % VIEWS.length]);
+  if (e.key === 'ArrowLeft') setView(VIEWS[(i - 1 + VIEWS.length) % VIEWS.length]);
+});
+document.getElementById('tabs').addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) setView(t.dataset.view); });
+{ const h = location.hash.slice(1); if (VIEWS.includes(h)) view = prevView = h; }
+load();
+</script>
+</body>
+</html>
